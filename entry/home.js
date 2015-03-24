@@ -1,0 +1,1 @@
+require("../client")(require("../page/home.js"))
