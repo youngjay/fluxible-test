@@ -1,1 +1,4 @@
-require("../client")(require("../page/home.js"))
+module.exports = {
+    action: require('../action/permissions'),
+    component: require('../component/home.jsx')
+}

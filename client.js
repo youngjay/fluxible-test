@@ -15,7 +15,6 @@ module.exports = function(page) {
     var action = page.action;
     var component = page.component;
 
-
     var app = App(component);
 
     app.rehydrate(dehydratedState, function (err, context) {
@@ -24,13 +23,8 @@ module.exports = function(page) {
             throw err;
         }
 
-        window.context = context;
-
-        var mountNode = document.getElementById('todoapp');
-
-        React.render(context.createElement(), mountNode);
+        React.render(context.createElement(), document.getElementById('main'));
     });
-
 }
 
 

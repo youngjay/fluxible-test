@@ -5,6 +5,8 @@ var _ = require('lodash');
 var pather = require('path');
 var fs = require('fs');
 var through = require('through2');
+var mkdirp = require("mkdirp")
+var getDirName = require("path").dirname
 
 var SCRIPT_CONTENT_TEMPLATE = _.template('require("<%=bootstrap%>")(require("<%=component%>"))');
 
@@ -43,21 +45,26 @@ module.exports = mixin(function(options) {
             var filePath = pather.resolve(pather.join(self.options.entryPath, path));
 
             if (fs.existsSync(filePath + '.js')) {
-                self.createEntryFile(filePath, path, function(distFile) {
+
+                self.createEntryFile(filePath, path, function(err, distFile) {
+                    if (err) {
+                        res.status(500).end(err);
+                        return;
+                    }     
+
+                    res.setHeader('Content-Type', 'text/javascript')                    
+
+                    var contents = [];
 
                     browserify({
                         transform: [reactify]
                     })
-                    .add(distFile)
+                    .add('./' +  pather.relative('./', distFile))
                     .bundle()
-                    .pipe(through.obj(function() {
-                        console.log(arguments)
-                    }))
-
+                    .pipe(res)
 
                 })
             } else {
-                console.log('404')
                 res.status(404).end();
             }
         }
@@ -71,14 +78,21 @@ module.exports = mixin(function(options) {
             component: pather.relative(pather.join(dist, path, '../'), filePath)
         });
 
-        var distFile = pather.join(dist, path) + '.js';      
+        var distFile = pather.join(dist, path) + '.js';  
 
-        fs.writeFile(distFile, content, 'utf-8', function(err) {
+        mkdirp(getDirName(distFile), function(err) {
             if (err) {
-                console.error(err);
-                return;
+                return callback(err);
             }
-            callback(distFile)
-        })
+
+            fs.writeFile(distFile, content, 'utf-8', function(err) {
+                if (err) {
+                    return callback(err);
+                }
+                callback(null, distFile)
+            })
+        })    
+
+        
     }
 })

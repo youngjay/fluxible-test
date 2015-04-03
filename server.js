@@ -15,71 +15,41 @@ var through = require('through2');
 var server = express();
 server.set('state namespace', 'App');
 // server.use(favicon(__dirname + '/../favicon.ico'));
-server.use('/public', express.static(__dirname + '/build'));
+server.use('/public', express.static(__dirname + '/public'));
 server.use(cookieParser());
 server.use(bodyParser.json());
-server.use(csrf({cookie: true}));
+// server.use(csrf({cookie: true}));
 
-var App = require('./app');
 var HtmlComponent = React.createFactory(require('./component/html.jsx'));
 
 var ScriptBuilder = require('./script-builder');
-var builder = new ScriptBuilder({
+var PageBuilder = require('./page-builder');
+
+
+
+var scriptBuilder = new ScriptBuilder({
     basePath: '/script',
-    entryPath: './page',
+    entryPath: './entry',
     dist: './build',
     bootstrapFile: './client'
+});
+
+var pageBuilder = new PageBuilder({
+    entryPath: './entry',
+    HtmlWrapper: HtmlComponent,
+    getScriptSrcs: scriptBuilder.getScriptSrcs.bind(scriptBuilder),
+    getCSSes: function() {
+        return [
+            '/public/semantic-ui/semantic.css'
+        ]
+    }
 })
 
+var pigeonPlugin = require('./pigeon');
 
-server.use(builder.getBasePath(), builder.getMiddleware());
-
-server.use(function (req, res, next) {
-    var path = req.path;
-
-    var path
-
-    try {
-        page = require('./page' + path);
-    } catch (e) {
-        next();
-    }
-
-    var action = page.action;
-    var component = page.component;
-
-
-    var app = App(component);
-
-    var context = app.createContext();
-
-    context.executeAction(action, req.query, function(err) {
-        if (err) {
-            if (err.status && err.status === 404) {
-                return next();
-            }
-            else {
-                return next(err);
-            }
-        }
-
-
-        var exposed = 'window.App=' + serialize(app.dehydrate(context)) + ';';
-
-        var Component = app.getComponent();
-        var componentContext = context.getComponentContext();
-        var html = React.renderToStaticMarkup(HtmlComponent({
-            state: exposed,
-            markup: React.renderToString(context.createElement()),
-            context: componentContext,
-            scripts: builder.getScriptSrcs(path)
-        }));
-
-        res.send(html);
-
-    })
-
-});
+server.use(scriptBuilder.getBasePath(), scriptBuilder.getMiddleware());
+server.use(pigeonPlugin.getXhrPath(), pigeonPlugin.getMiddleware());
+server.use(pageBuilder.getMiddleware());
 
 var port = process.env.PORT || 3000;
 server.listen(port);

@@ -54,4 +54,14 @@ gulp.task('build', function() {
     });
 });
 
+gulp.task('test', function() {
+     browserify({
+            transform: [reactify]
+        })
+        .add('./build/about/about.js')
+        .bundle()
+        .pipe(source('common.js'))
+        .pipe(gulp.dest('./build'))
+})
+
 

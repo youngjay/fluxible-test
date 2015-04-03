@@ -1,1 +1,1 @@
-require("../../client")(require("../../page/about/about"))
+require("../../client")(require("../../entry/about/about"))

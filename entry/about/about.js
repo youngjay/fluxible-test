@@ -1,1 +1,4 @@
-require("../../client")(require("../../page/about/about.js"))
+module.exports = {
+    action: require('../../action/about'),
+    component: require('../../component/about.jsx')
+}

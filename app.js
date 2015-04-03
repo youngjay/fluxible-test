@@ -6,8 +6,21 @@
 var React = require('react');
 var Fluxible = require('fluxible');
 
+var stores = [require('./store/permission')];
+var plugins = [require('./pigeon')];
+
 module.exports = function(Component) {
-    return new Fluxible({
+    var app = new Fluxible({
         component: React.createFactory(Component)
     });
+
+    stores.forEach(function(store) {
+        app.registerStore(store);
+    })
+    
+    plugins.forEach(function(plugin) {
+        app.plug(plugin);
+    })
+
+    return app;
 };
