@@ -69,21 +69,21 @@ module.exports = mixin(function(options) {
         },
     },
 
-    // getBasePath: function() {
-    //     return this.options.basePath;
-    // },
+    getBasePath: function() {
+        return this.options.basePath;
+    },
 
-    // getScriptSrcs: function(path) {
-    //     return this.prefixBasePath([path]);
-    // },
+    getScriptSrcs: function(path) {
+        return this.prefixBasePath([path]);
+    },
 
-    // prefixBasePath: function(paths) {
-    //     var basePath = this.getBasePath();
+    prefixBasePath: function(paths) {
+        var basePath = this.getBasePath();
 
-    //     return paths.map(function(path) {
-    //         return pather.join(basePath, path);
-    //     })
-    // },
+        return paths.map(function(path) {
+            return pather.join(basePath, path);
+        })
+    },
 
     getMiddleware: function() {
         var self = this;
@@ -98,6 +98,11 @@ module.exports = mixin(function(options) {
                 var page = require('./entry' + path);
                 var action = page.action;
                 var component = page.component;
+
+
+                if (page.async) {
+                    action = null
+                }
 
                 var app = App(component);
 
@@ -116,13 +121,12 @@ module.exports = mixin(function(options) {
                         scripts: self.options.getScriptSrcs(path),
                         csses: self.options.getCSSes(path)
                     }));
-
                     res.send(html);
                 };
 
 
-
                 if (action) {
+
                     context.executeAction(action, req.query, function(err) {
                         if (err) {
                             if (err.status && err.status === 404) {
@@ -142,6 +146,6 @@ module.exports = mixin(function(options) {
                 res.status(404).end();
             }
         }
-    },
+    }
 
 })

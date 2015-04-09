@@ -11,12 +11,26 @@ var App = require('./app');
 var dehydratedState = window.App; // sent from the server
 window.React = React; // for chrome dev tool support
 
+var mergeMethods = function(one, two) {
+    return function mergedResult() {
+        var a = one.apply(this, arguments);
+        var b = two.apply(this, arguments);        
+      };
+}
+
 module.exports = function(page) {
     var action = page.action;
     var component = page.component;
 
-    var app = App(component);
+    if (action && page.async) {
+        component.prototype.componentDidMount = mergeMethods(component.prototype.componentDidMount, function() {
+            this.executeAction(action, {
+                id: 7
+            })
+        })
+    }
 
+    var app = App(component);
 
     app.rehydrate(dehydratedState, function (err, context) {
         window.context = context;

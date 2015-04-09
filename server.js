@@ -22,22 +22,24 @@ server.use(bodyParser.json());
 
 var HtmlComponent = React.createFactory(require('./component/html.jsx'));
 
-var ScriptBuilder = require('./script-builder');
+// var ScriptBuilder = require('./script-builder');
 var PageBuilder = require('./page-builder');
 
 
 
-var scriptBuilder = new ScriptBuilder({
-    basePath: '/script',
-    entryPath: './entry',
-    dist: './build',
-    bootstrapFile: './client'
-});
+// var scriptBuilder = new ScriptBuilder({
+//     basePath: '/script',
+//     entryPath: './entry',
+//     dist: './build',
+//     bootstrapFile: './client'
+// });
 
 var pageBuilder = new PageBuilder({
     entryPath: './entry',
     HtmlWrapper: HtmlComponent,
-    getScriptSrcs: scriptBuilder.getScriptSrcs.bind(scriptBuilder),
+    getScriptSrcs: function(path) {
+        return ['/public' + path + '.js']
+    },
     getCSSes: function() {
         return [
             '/public/semantic-ui/semantic.css'
@@ -47,7 +49,7 @@ var pageBuilder = new PageBuilder({
 
 var pigeonPlugin = require('./pigeon');
 
-server.use(scriptBuilder.getBasePath(), scriptBuilder.getMiddleware());
+// server.use(scriptBuilder.getBasePath(), scriptBuilder.getMiddleware());
 server.use(pigeonPlugin.getXhrPath(), pigeonPlugin.getMiddleware());
 server.use(pageBuilder.getMiddleware());
 

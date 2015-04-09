@@ -5,6 +5,14 @@ var TerritoryStore = require('../store/territory');
 module.exports = React.createClass({ 
     mixins: [FluxibleMixin],
 
+    statics: {
+        storeListeners: [TerritoryStore]
+    },
+
+    onChange: function() {
+        this.setState(this.getState())
+    },
+
     getInitialState: function () {
         return this.getState();
     },

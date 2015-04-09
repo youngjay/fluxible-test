@@ -10,7 +10,19 @@ var _ = require('lodash')
 module.exports = React.createClass({ 
     mixins: [FluxibleMixin],
 
+    statics: {
+        storeListeners: [TerritoryStore]
+    },
+
+    onChange: function() {
+        this.setState(this.getState())
+    },
+
     getInitialState: function () {
+        return this.getState();
+    },
+
+    getState: function () {
         return _.extend({}, this.getStore(TerritoryStore).data.territory);
     },
 
@@ -32,6 +44,7 @@ module.exports = React.createClass({
                         <input type="text" value={this.state.territoryName} onChange={this.onTextChange} placeholder="战区名称"/>
                     </div>
                     <button className="ui submit button" type="submit">修改</button>
+                    <a href="/list">返回列表</a>
                 </form>
     }
 });
