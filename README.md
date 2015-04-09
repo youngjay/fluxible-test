@@ -30,7 +30,7 @@ PORT=3000 node server
 gulp
 ```
 
-- 浏览器打开 [http://localhost:3005/list](http://localhost:3005/list)
+- 浏览器打开 [http://localhost:3005/list](http://localhost:3000/list)
 
 
 ## 说明
