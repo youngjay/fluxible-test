@@ -1,8 +1,8 @@
 {
-  "name": "fluxible-test",
-  "version": "1.0.0",
+  "name": "react-middleware",
+  "version": "0.1.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -23,7 +23,7 @@
     "fluxible": "^0.3.0",
     "fluxible-page-builder": "^0.1.0",
     "fluxible-plugin-fetchr": "^0.2.3",
-    "fluxible-plugin-pigeon": "^0.1.0",
+    "fluxible-plugin-pigeon": "^1.0.0",
     "fluxible-plugin-routr": "^0.3.0",
     "glob": "^5.0.3",
     "gulp": "^3.8.11",
