@@ -6,7 +6,7 @@
 var React = require('react');
 var Fluxible = require('fluxible');
 
-var stores = [require('./store/permission')];
+var stores = [require('./store/territory')];
 var plugins = [require('./pigeon')];
 
 module.exports = function(Component) {

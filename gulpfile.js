@@ -11,21 +11,21 @@ var pather = require('path');
 gulp.task('entry', function() {
     var SCRIPT_CONTENT_TEMPLATE = _.template('require("<%=clientPath%>")(require("<%=componentPath%>"))');
 
-    return gulp.src('./page/**/*.js')
+    return gulp.src('./entry/**/*.js')
         .pipe(through.obj(function(file, enc, cb) {     
-            var relative = pather.relative(file.path, './page');
+            var relative = pather.relative(file.path, './entry');
 
             file.contents = new Buffer(SCRIPT_CONTENT_TEMPLATE({
                 clientPath: pather.join(relative, './client'),
-                componentPath: pather.join(relative, './page', file.relative)
+                componentPath: pather.join(relative, './entry', file.relative)
             }));
             this.push(file);
             cb();
         }))
-        .pipe(gulp.dest('./entry'))
+        .pipe(gulp.dest('./build'))
 });
 
-gulp.task('build', function() {
+gulp.task('build', ['entry'], function() {
 
     glob('./entry/**/*.js', function(err, files) {   
 
@@ -39,14 +39,17 @@ gulp.task('build', function() {
             });
         })
 
-        bundler.plugin('factor-bundle', { outputs: files.map(function(file) {
-            return file.replace('./entry/', './build/')
-        })})
+        // bundler.plugin('factor-bundle', { outputs: files.map(function(file) {
+        //     return file.replace('./entry/', './build/')
+        // })})
 
         var bundle = function() {            
             bundler.bundle()
-                .pipe(source('common.js'))
-                .pipe(gulp.dest('./build'))
+                .pipe(through.obj(function(file, enc, callback) {
+                    callback(file);
+                    console.log(file)
+                }))
+                .pipe(gulp.dest('./build1'))
         };
 
         bundler.on('update', bundle); // on any dep update, runs the bundler
@@ -54,14 +57,14 @@ gulp.task('build', function() {
     });
 });
 
-gulp.task('test', function() {
-     browserify({
-            transform: [reactify]
-        })
-        .add('./build/about/about.js')
-        .bundle()
-        .pipe(source('common.js'))
-        .pipe(gulp.dest('./build'))
-})
+// gulp.task('test', function() {
+//      browserify({
+//             transform: [reactify]
+//         })
+//         .add('./build/about/about.js')
+//         .bundle()
+//         .pipe(source('common.js'))
+//         .pipe(gulp.dest('./build'))
+// })
 
 

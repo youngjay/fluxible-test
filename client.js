@@ -17,7 +17,9 @@ module.exports = function(page) {
 
     var app = App(component);
 
+
     app.rehydrate(dehydratedState, function (err, context) {
+        window.context = context;
 
         if (err) {
             throw err;

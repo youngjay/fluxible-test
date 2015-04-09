@@ -104,6 +104,7 @@ module.exports = mixin(function(options) {
                 var context = app.createContext();
 
                 var render = function() {
+
                     var exposed = 'window.App=' + serialize(app.dehydrate(context)) + ';';
 
                     var Component = app.getComponent();
@@ -115,8 +116,11 @@ module.exports = mixin(function(options) {
                         scripts: self.options.getScriptSrcs(path),
                         csses: self.options.getCSSes(path)
                     }));
-                    res.send(prettyPrint(html));
+
+                    res.send(html);
                 };
+
+
 
                 if (action) {
                     context.executeAction(action, req.query, function(err) {
