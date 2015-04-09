@@ -65,4 +65,6 @@ files.forEach(function(file) {
 
 gulp.task('build', files);
 
+gulp.task('default', ['build']);
+
 

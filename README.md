@@ -27,7 +27,7 @@ PORT=3000 node server
 - 开启监控编译
 
 ```
-gulp build
+gulp
 ```
 
 - 浏览器打开 [http://localhost:3005/list](http://localhost:3005/list)
