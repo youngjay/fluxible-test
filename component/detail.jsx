@@ -1,10 +1,10 @@
 var React = require('react');
 var FluxibleMixin = require('fluxible').FluxibleMixin;
+var _ = require('lodash')
+
 var TerritoryStore = require('../store/territory');
-var LensedStateMixin = require('react-lensed-state');
 
 var updateTerritoryAction = require('../action/update-territory');
-var _ = require('lodash')
 
 
 module.exports = React.createClass({ 

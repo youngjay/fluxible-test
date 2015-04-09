@@ -1,9 +1,3 @@
-/**
- * Copyright 2014, Yahoo! Inc.
- * Copyrights licensed under the New BSD License. See the accompanying LICENSE file for terms.
- */
-/*global document, window */
-'use strict';
 var React = require('react');
 var App = require('./app');
 var queryString = require('querystring');
