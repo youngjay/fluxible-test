@@ -11,6 +11,7 @@ var cookieParser = require('cookie-parser');
 var csrf = require('csurf');
 var React = require('react');
 var through = require('through2');
+var pather = require('path');
 
 var server = express();
 server.set('state namespace', 'App');
@@ -23,7 +24,7 @@ server.use(bodyParser.json());
 var HtmlComponent = React.createFactory(require('./component/html.jsx'));
 
 // var ScriptBuilder = require('./script-builder');
-var PageBuilder = require('./page-builder');
+var PageBuilder = require('fluxible-page-builder');
 
 
 
@@ -34,8 +35,11 @@ var PageBuilder = require('./page-builder');
 //     bootstrapFile: './client'
 // });
 
+var App = require('./app')
+
 var pageBuilder = new PageBuilder({
-    entryPath: './entry',
+    entryPath: pather.resolve('./entry'),
+    App: App,
     HtmlWrapper: HtmlComponent,
     getScriptSrcs: function(path) {
         return ['/public' + path + '.js']

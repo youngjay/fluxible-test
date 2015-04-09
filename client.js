@@ -6,6 +6,7 @@
 'use strict';
 var React = require('react');
 var App = require('./app');
+var queryString = require('querystring');
 
 
 var dehydratedState = window.App; // sent from the server
@@ -15,7 +16,7 @@ var mergeMethods = function(one, two) {
     return function mergedResult() {
         var a = one.apply(this, arguments);
         var b = two.apply(this, arguments);        
-      };
+    };
 }
 
 module.exports = function(page) {
@@ -24,9 +25,7 @@ module.exports = function(page) {
 
     if (action && page.async) {
         component.prototype.componentDidMount = mergeMethods(component.prototype.componentDidMount, function() {
-            this.executeAction(action, {
-                id: 7
-            })
+            this.executeAction(action, queryString.parse(location.search.replace(/^\?/, '')))
         })
     }
 

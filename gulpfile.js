@@ -7,8 +7,10 @@ var through = require('through2');
 var _ = require('lodash');
 var glob = require('glob');
 var pather = require('path');
+var gutil = require('gulp-util');
+var buffer = require('vinyl-buffer');
 
-var browserify = require('gulp-browserify');
+var TEMP_BOOTSTRAP_FOLDER = './build';
 
 gulp.task('entry', function() {
     var SCRIPT_CONTENT_TEMPLATE = _.template('require("<%=clientPath%>")(require("<%=componentPath%>"))');
@@ -24,48 +26,43 @@ gulp.task('entry', function() {
             this.push(file);
             cb();
         }))
-        .pipe(gulp.dest('./build'))
+        .pipe(gulp.dest(TEMP_BOOTSTRAP_FOLDER))
 });
 
-gulp.task('build', ['entry'], function() {
-    gulp.src('./build/**/*.js')
-        .pipe(browserify({
-            transform: [reactify]
-        }))        
-        .pipe(gulp.dest('./public'))
+
+var files = glob.sync(TEMP_BOOTSTRAP_FOLDER + '/**/*.js');
 
 
+files.forEach(function(file) {
+    var customOpts = {
+      entries: [file],
+      transform: [reactify]
+    };
 
+    var opts = _.assign({}, watchify.args, customOpts);
 
+    var b = watchify(browserify(opts));
 
-    // glob('./entry/**/*.js', function(err, files) {   
+    gulp.task(file, ['entry'],  bundle); 
 
-    //     var bundler = watchify(browserify(_.extend({
-    //         transform: [reactify]
-    //     }, watchify.args)));
-           
-    //     files.forEach(function(file) {
-    //         bundler.require(file, {
-    //             entry: true
-    //         });
-    //     })
+    b.on('update', function() {
+        bundle();
+    }); 
+    b.on('log', gutil.log);
 
-    //     // bundler.plugin('factor-bundle', { outputs: files.map(function(file) {
-    //     //     return file.replace('./entry/', './build/')
-    //     // })})
+    function bundle() {
+      return b.bundle()
 
-    //     var bundle = function() {            
-    //         bundler.bundle()
-    //             .pipe(through.obj(function(file, enc, callback) {
-    //                 callback(file);
-    //                 console.log(file)
-    //             }))
-    //             .pipe(gulp.dest('./build1'))
-    //     };
-
-    //     bundler.on('update', bundle); // on any dep update, runs the bundler
-    //     bundle();
-    // });
+        // log errors if they happen
+        .on('error', gutil.log.bind(gutil, 'Browserify Error'))     
+        .pipe(source(file.replace(TEMP_BOOTSTRAP_FOLDER, '.'))) 
+        // optional, remove if you don't need to buffer file contents
+        .pipe(buffer())
+        .pipe(gulp.dest('./public'));
+    }
 });
+
+
+gulp.task('build', files);
 
 
