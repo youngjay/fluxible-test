@@ -11,17 +11,18 @@ var gutil = require('gulp-util');
 var buffer = require('vinyl-buffer');
 
 var TEMP_BOOTSTRAP_FOLDER = './build';
+var ENTRY_FOLDER = './entry';
 
 gulp.task('entry', function() {
     var SCRIPT_CONTENT_TEMPLATE = _.template('require("<%=clientPath%>")(require("<%=componentPath%>"))');
 
-    return gulp.src('./entry/**/*.js')
+    return gulp.src(ENTRY_FOLDER + '/**/*.js')
         .pipe(through.obj(function(file, enc, cb) {     
-            var relative = pather.relative(file.path, './entry');
+            var relative = pather.relative(file.path, ENTRY_FOLDER);
 
             file.contents = new Buffer(SCRIPT_CONTENT_TEMPLATE({
                 clientPath: pather.join(relative, './client'),
-                componentPath: pather.join(relative, './entry', file.relative)
+                componentPath: pather.join(relative, ENTRY_FOLDER, file.relative)
             }));
             this.push(file);
             cb();
@@ -30,8 +31,7 @@ gulp.task('entry', function() {
 });
 
 
-var files = glob.sync(TEMP_BOOTSTRAP_FOLDER + '/**/*.js');
-
+var files = glob.sync(ENTRY_FOLDER + '/**/*.js');
 
 files.forEach(function(file) {
     var customOpts = {
@@ -55,7 +55,7 @@ files.forEach(function(file) {
 
         // log errors if they happen
         .on('error', gutil.log.bind(gutil, 'Browserify Error'))     
-        .pipe(source(file.replace(TEMP_BOOTSTRAP_FOLDER, '.'))) 
+        .pipe(source(file.replace(ENTRY_FOLDER, '.'))) 
         // optional, remove if you don't need to buffer file contents
         .pipe(buffer())
         .pipe(gulp.dest('./public'));
