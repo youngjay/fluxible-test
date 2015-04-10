@@ -1,5 +1,5 @@
 module.exports = {
     action: require('../action/detail'),
-    // async: true,
+    async: true,
     component: require('../component/detail.jsx')
 }
