@@ -50,10 +50,10 @@ entries.forEach(function(entry) {
         return b.bundle()
             .pipe(source(entry.replace(ENTRY_PATH, '.'))) 
             .pipe(buffer()) 
-            .pipe(sourcemaps.init({loadMaps: true}))
-            .pipe(uglify())
+            // .pipe(sourcemaps.init({loadMaps: true}))
+            // .pipe(uglify())
             .on('error', gutil.log.bind(gutil, 'Browserify Error'))    
-            .pipe(sourcemaps.write('./'))
+            // .pipe(sourcemaps.write('./'))
             .pipe(gulp.dest(OUTPUT_PATH));
     };
 

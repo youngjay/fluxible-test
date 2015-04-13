@@ -20,11 +20,14 @@ npm install
 
 - 运行服务器
 
+我使用[forever](harmony)做服务器监控
+
 ```
-PORT=3000 node server
+npm install forever -g
+forever -w server.js
 ```
 
-- 开启监控编译
+- 开启gulp编译
 
 ```
 gulp
