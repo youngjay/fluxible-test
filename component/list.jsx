@@ -31,6 +31,9 @@ module.exports = React.createClass({
                             <th>
                                 Name
                             </th>
+                            <th>
+                                updateTime
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -40,6 +43,7 @@ module.exports = React.createClass({
                                             <a href={"/detail?id=" + territory.id}>{territory.id}</a>                                            
                                         </td>
                                         <td>{territory.territoryName}</td>
+                                        <td>{territory.updateTime.toString()}</td>                                        
                                     </tr>
                         })}
                     </tbody>

@@ -1,3 +1,6 @@
+// TODO 
+// place as a npm module
+
 var React = require('react');
 var App = require('./app');
 var queryString = require('querystring');

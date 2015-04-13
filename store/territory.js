@@ -5,6 +5,13 @@
 'use strict';
 var createStore = require('fluxible/addons').createStore;
 
+var normalize = function(territory) {
+    if (territory.updateTime) {
+        territory.updateTime = new Date(territory.updateTime);
+    }
+    
+    return territory
+};
 
 module.exports = createStore({
     storeName: 'Territory',
@@ -21,12 +28,12 @@ module.exports = createStore({
     },
 
     loadAll: function(territories) {
-        this.data.territories = territories;
+        this.data.territories = territories.map(normalize);
         this.emitChange();
     },
 
     loadOne: function(territory) {
-        this.data.territory = territory;
+        this.data.territory = normalize(territory);
         this.emitChange();
     },
     
@@ -35,6 +42,8 @@ module.exports = createStore({
     },
 
     rehydrate: function (data) {
+        data.territories = data.territories.map(normalize);
+        data.territory = normalize(data.territory);
         this.data = data;
     }
 });
