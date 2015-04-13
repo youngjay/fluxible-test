@@ -7,9 +7,6 @@
 - 发布js代码，直接调用pigeon服务，打通各个业务。
 - 模块可直接复用
 
-## 注意事项
-因为node-pigeon-client的关系，所以node版本用0.10.x
-
 ## get start
 
 - 安装依赖
