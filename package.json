@@ -23,7 +23,7 @@
     "fluxible": "^0.3.0",
     "fluxible-page-builder": "^0.1.0",
     "fluxible-plugin-fetchr": "^0.2.3",
-    "fluxible-plugin-pigeon": "^1.0.0",
+    "fluxible-plugin-pigeon": "^1.0.4",
     "fluxible-plugin-routr": "^0.3.0",
     "glob": "^5.0.3",
     "gulp": "^3.8.11",

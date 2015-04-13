@@ -26,7 +26,7 @@ module.exports = React.createClass({
                     <thead>
                         <tr>
                             <th>
-                                ID1123
+                                ID
                             </th>
                             <th>
                                 Name
