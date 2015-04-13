@@ -17,7 +17,7 @@ npm install
 
 - 运行服务器
 
-我使用[forever](harmony)做服务器监控
+我使用[forever](https://github.com/foreverjs/forever)做服务器监控
 
 ```
 npm install forever -g
