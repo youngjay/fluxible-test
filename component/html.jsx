@@ -11,6 +11,7 @@ var Component = React.createClass({
                     {this.props.csses.map(function(src) {
                         return <link rel="stylesheet" type="text/css" href={src}/>
                     })}
+                    <title>{this.props.title}</title>
                 </head>
                 <body>
                     <div id="main" dangerouslySetInnerHTML={{__html: this.props.markup}}></div>

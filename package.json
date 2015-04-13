@@ -21,7 +21,7 @@
     "factor-bundle": "^2.4.0",
     "flux-router-component": "^0.6.0",
     "fluxible": "^0.3.0",
-    "fluxible-page-builder": "^0.1.0",
+    "fluxible-page-builder": "^0.1.1",
     "fluxible-plugin-fetchr": "^0.2.3",
     "fluxible-plugin-pigeon": "^1.0.4",
     "fluxible-plugin-routr": "^0.3.0",

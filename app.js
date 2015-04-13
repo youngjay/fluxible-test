@@ -20,7 +20,7 @@ module.exports = function(Component) {
     
     plugins.forEach(function(plugin) {
         app.plug(plugin);
-    })
+    });
 
     return app;
 };
