@@ -17,7 +17,7 @@ var Component = React.createClass({
                     <div id="main" dangerouslySetInnerHTML={{__html: this.props.markup}}></div>
                     <script dangerouslySetInnerHTML={{__html: this.props.state}}></script>
                     {this.props.scripts.map(function(src) {
-                        return <script src={src} defer key={src}></script>
+                        return <script src={src} key={src}></script>
                     })}
                 </body>            
             </html>

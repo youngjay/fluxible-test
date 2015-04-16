@@ -23,7 +23,7 @@ var HtmlComponent = React.createFactory(require('./component/html.jsx'));
 // var ScriptBuilder = require('./script-builder');
 var PageBuilder = require('fluxible-page-builder');
 
-
+var fs = require('fs');
 
 // var scriptBuilder = new ScriptBuilder({
 //     basePath: '/script',
@@ -34,16 +34,36 @@ var PageBuilder = require('fluxible-page-builder');
 
 var App = require('./app')
 
+var getScriptSrcs = process.env.PRD ? (function() {
+    var PKG = require('./package.json');
+    var STATIC_MAPPING_FILE = pather.resolve('.static-mapping.json');
+
+    if (!fs.existsSync(STATIC_MAPPING_FILE)) {
+        throw new Error('static-mapping file is required in product env');
+    }
+
+    var staticMapping = require(STATIC_MAPPING_FILE);
+    var staticScriptMapping = staticMapping.script;
+
+
+    return function(path) {
+        return ['/common.js', path + '.js'].map(function(name) {
+            return '/public/' + staticScriptMapping[name.substring(1)]
+        })
+
+    }
+})() : function(path) {
+    return ['/public' + path + '.js']
+}
+
 var pageBuilder = new PageBuilder({
     entryPath: pather.resolve('./entry'),
     App: App,
     HtmlWrapper: HtmlComponent,
-    getScriptSrcs: function(path) {
-        return ['/public' + path + '.js']
-    },
+    getScriptSrcs: getScriptSrcs,
     getCSSes: function() {
         return [
-            '/public/semantic-ui/semantic.css'
+            // '/public/semantic-ui/semantic.css'
         ]
     }
 })
