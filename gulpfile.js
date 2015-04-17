@@ -27,6 +27,7 @@ var BROWSERIFY_TRANSFORMS = [
 ];
 var PKG = require('./package.json');
 var STATIC_MAPPING_FILE = '.static-mapping.json';
+var CounterAttack = require('counter-attack');
 
 var ENTRIES = glob.sync(ENTRY_PATH + '/**/*.js');
 
@@ -144,18 +145,10 @@ var url = require('rework-plugin-url');
 gulp.task('build css', function(done) {
     var cssEntries = PKG.css;
     if (cssEntries) {
-        cssEntries.forEach(function(entry) {
-            if (!fs.existsSync(entry)) {
-                done(entry + ' not exists');
-                return;
-            }
-            var content = fs.readFileSync(entry, FILE_ENDCODING);
-            rework(content).use(url(function(path) {
-                if (path.indexOf('data') === -1) {
-                    console.log(path)
-                }
-                return path;
-            }))
+        CounterAttack.build.minifyAndLocalizeCSS(cssEntries, {
+            dest: pather.resolve('./public')
+        }, function() {
+            console.log(arguments)
         })
     } else {
         done();

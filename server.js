@@ -63,7 +63,7 @@ var pageBuilder = new PageBuilder({
     getScriptSrcs: getScriptSrcs,
     getCSSes: function() {
         return [
-            // '/public/semantic-ui/semantic.css'
+            'public/css.all.34b50e9bd0eceff0dee3a0ee4dd1e5fa.css'
         ]
     }
 })
