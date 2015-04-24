@@ -19,7 +19,7 @@ var tap = require('gulp-tap');
 var through = require('through2');
 
 var ENTRY_PATH = './entry';
-var OUTPUT_PATH = './public';
+var OUTPUT_PATH = pather.resolve('./public');
 var CLIENT_BOOTSTRAP_MODULE = './client';
 var FILE_ENDCODING = 'utf8'
 var BROWSERIFY_TRANSFORMS = [
@@ -93,70 +93,26 @@ var watchEntryTasks = ENTRIES.map(function(entry) {
     return taskName;
 });
 
-gulp.task('build js for deploy', function() {
-    var COMMON_SCRIPT_NAME = 'common.js';
 
-    var setMapping = (function() {
-        var o = {};
-        var allCount = ENTRIES.length + 1; /* 1 for COMMON_SCRIPT_NAME */
 
-        return function(key, value) {
-            o[key] = value;
-            if (--allCount === 0) {
-                setScriptMapping(o);
-            }
-        }
-    })();
-
-    var b = browserify({
-        transform: BROWSERIFY_TRANSFORMS,
-        entries: ENTRIES.map(createEntryStream)
-    }).plugin(factor, {
-        outputs: ENTRIES.map(function(entry) {
-            return concat(function(body) {
-                var hash = createHash(body);
-                var dest = pather.join(OUTPUT_PATH, hash + '.js');
-                fs.writeFile(dest, body, function(err) {
-                    if (err) {
-                        gutil.log('write script error:' + err)
-                    } else {                     
-                        setMapping(pather.relative(ENTRY_PATH, entry), pather.basename(dest));
-                    }
-                })
-            })
-        })
-    })
-
-    return b.bundle()
-        .pipe(source(COMMON_SCRIPT_NAME))
-        .pipe(buffer()) 
-        .pipe(through.obj(function(file, enc, next) {
-            var hash = createHash(file.contents);
-            file.path = pather.join(file.path, '../', hash + '.js');
-            setMapping(COMMON_SCRIPT_NAME, pather.basename(file.path));
-            this.push(file);
-            next();
-        }))
-        .pipe(gulp.dest(OUTPUT_PATH))
-})
-
-var rework = require('rework');
-var url = require('rework-plugin-url');
 gulp.task('build css', function(done) {
     var cssEntries = PKG.css;
     if (cssEntries) {
-        CounterAttack.build.minifyAndLocalizeCSS(cssEntries, {
-            dest: pather.resolve('./public')
-        }, function() {
-            console.log(arguments)
+        CounterAttack.build.minifyAndLocalizeCSS(cssEntries, OUTPUT_PATH, function() {
+            console.log(arguments[1])
         })
     } else {
         done();
     }
-
 });
 
+gulp.task('js', function(done) {
+    CounterAttack.build.generateFactorAndEntries(ENTRIES.map(createEntryStream), OUTPUT_PATH, function() {
+        console.log(arguments);
+    })
+})
 
-gulp.task('watch js entris', watchEntryTasks);
 
-gulp.task('default', ['build css']);
+gulp.task('watch', watchEntryTasks);
+
+gulp.task('default', ['watch']);

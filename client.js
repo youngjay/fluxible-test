@@ -14,7 +14,7 @@ var mergeMethods = function(one, two) {
         var a = one.apply(this, arguments);
         var b = two.apply(this, arguments);        
     };
-}
+};
 
 module.exports = function(page) {
     var action = page.action;
